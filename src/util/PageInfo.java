@@ -8,13 +8,13 @@ public class PageInfo
 	public static final String SLASH_REPLACEMENT = "_&$%";
 
 	public final URL url;
-	public final int hopCount;
+	public final int remainingHops;
 	public final String fileName;
 
-	public PageInfo(URL url, int hopCount)
+	public PageInfo(URL url, int remainingHops)
 	{
 		this.url = url;
-		this.hopCount = hopCount;
+		this.remainingHops = remainingHops;
 		fileName = makeFileName(url);
 	}
 
