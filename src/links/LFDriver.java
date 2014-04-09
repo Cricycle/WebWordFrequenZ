@@ -3,6 +3,7 @@ package links;
 import java.util.concurrent.PriorityBlockingQueue;
 
 import util.PageInfo;
+import web.PageDownloader;
 
 public class LFDriver
 	implements Runnable

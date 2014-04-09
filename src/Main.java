@@ -1,3 +1,8 @@
+import java.net.URL;
+
+import util.PageInfo;
+import web.PageDownloader;
+
 public class Main
 {
 
@@ -15,6 +20,19 @@ public class Main
 
 		// TODO create buffers between tasks
 		// TODO start drivers for each task
+		
+		try {
+			// start PageDownloader here
+			PageInfo pi = new PageInfo(new URL(basePageURL), maxHopCount);
+			Thread t = new Thread(new PageDownloader(pi));
+			System.out.printf("%s, %s\n", pi.url, pi.fileName);
+			t.start();
+			System.out.println("started");
+			t.join();
+			System.out.println("end");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

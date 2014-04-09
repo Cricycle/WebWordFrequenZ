@@ -5,7 +5,10 @@ import java.net.URL;
 public class PageInfo
 {
 
-	public static final String SLASH_REPLACEMENT = "_&$%";
+	public static final String FORWARD_SLASH_REPLACEMENT = "%2F";
+	public static final String COLON_REPLACEMENT = "%3A";
+	public static final String FOLDER_NAME = "downloaded_pages";
+	
 
 	public final URL url;
 	public final int remainingHops;
@@ -15,13 +18,13 @@ public class PageInfo
 	{
 		this.url = url;
 		this.remainingHops = remainingHops;
-		fileName = makeFileName(url);
+		fileName = FOLDER_NAME + "/" + makeFileName(url);
 	}
 
 	private String makeFileName(URL url)
 	{
-		// TODO return url string with slash replaced
-		return null;
+		String part = url.toExternalForm();
+		return part.replace("/", FORWARD_SLASH_REPLACEMENT).replace(":", COLON_REPLACEMENT);
 	}
 
 }
