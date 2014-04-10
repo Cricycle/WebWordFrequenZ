@@ -30,10 +30,12 @@ public class Main
 		int maxNumberOfPages = Integer.parseInt(args[2]);
 
 		// make folder to store downloaded webpages
-		File folder = new File(Main.DOWNLOAD_FOLDER);
-		folder.mkdirs();
-		folder = new File(Main.ANALYSIS_FOLDER);
-		folder.mkdirs();
+		File downloadFolder = new File(Main.DOWNLOAD_FOLDER);
+		downloadFolder.mkdirs();
+
+		// make folder to store analysis results
+		File analysisFolder = new File(Main.ANALYSIS_FOLDER);
+		analysisFolder.mkdirs();
 
 		// create buffers between tasks
 
