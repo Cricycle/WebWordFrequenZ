@@ -1,18 +1,20 @@
-package links;
+package web;
 
 import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import util.PageInfo;
-import web.PDDriver;
 
-public class LFDriver
+public class PDDriver
 	implements Runnable
 {
+
+	private static AtomicInteger webpageCount = new AtomicInteger();
 
 	private final int MAX_NUM_PAGES;
 	private final PriorityBlockingQueue<PageInfo> inboundQueue, outboundQueue;
 
-	public LFDriver(int MAX_NUM_PAGES,
+	public PDDriver(int MAX_NUM_PAGES,
 			PriorityBlockingQueue<PageInfo> inboundQueue,
 			PriorityBlockingQueue<PageInfo> outboundQueue)
 	{
@@ -21,6 +23,7 @@ public class LFDriver
 		this.outboundQueue = outboundQueue;
 	}
 
+	@Override
 	public void run()
 	{
 		while (PDDriver.getPageCount() < MAX_NUM_PAGES)
@@ -28,7 +31,7 @@ public class LFDriver
 			try
 			{
 				PageInfo pageInfo = inboundQueue.take();
-				Thread t = new Thread(new LinkFinder(pageInfo, outboundQueue));
+				Thread t = new Thread(new PageDownloader(pageInfo, outboundQueue));
 				t.start();
 			}
 			catch (InterruptedException e)
@@ -37,6 +40,16 @@ public class LFDriver
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public static int getPageCount()
+	{
+		return webpageCount.get();
+	}
+
+	public static int incrementPageCount()
+	{
+		return webpageCount.incrementAndGet();
 	}
 
 }
