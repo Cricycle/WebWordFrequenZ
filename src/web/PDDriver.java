@@ -33,6 +33,7 @@ public class PDDriver
 				PageInfo pageInfo = inboundQueue.take();
 				Thread t = new Thread(new PageDownloader(pageInfo, outboundQueue));
 				t.start();
+				Thread.sleep(500); // don't kill websites
 			}
 			catch (InterruptedException e)
 			{

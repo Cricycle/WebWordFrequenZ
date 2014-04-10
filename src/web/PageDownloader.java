@@ -36,7 +36,7 @@ public class PageDownloader
 			return;
 		}
 		try (InputStream in = conn.getInputStream();
-				FileOutputStream fos = new FileOutputStream(pi.fileName, false))
+				FileOutputStream fos = new FileOutputStream(pi.getDLFileName(), true))
 		{
 			byte[] buffer = new byte[1 << 16];
 			int len = -1;

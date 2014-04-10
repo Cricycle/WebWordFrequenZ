@@ -32,7 +32,7 @@ public class LinkFinder implements Runnable
 		if (pageInfo.remainingHops > 0)
 		{
 			// get file from pageInfo.fileName
-			File webpage = new File(pageInfo.fileName);
+			File webpage = new File(pageInfo.getDLFileName());
 			Document doc;
 			try
 			{

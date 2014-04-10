@@ -12,7 +12,8 @@ import web.PDDriver;
 public class Main
 {
 
-	public static final String FOLDER_NAME = "downloaded_pages";
+	public static final String DOWNLOAD_FOLDER = "downloaded_pages";
+	public static final String ANALYSIS_FOLDER = "analyzed_data";
 
 	public static void main(String[] args)
 	{
@@ -28,7 +29,9 @@ public class Main
 		int maxNumberOfPages = Integer.parseInt(args[2]);
 
 		// make folder to store downloaded webpages
-		File folder = new File(Main.FOLDER_NAME);
+		File folder = new File(Main.DOWNLOAD_FOLDER);
+		folder.mkdirs();
+		folder = new File(Main.ANALYSIS_FOLDER);
 		folder.mkdirs();
 
 		// create buffers between tasks

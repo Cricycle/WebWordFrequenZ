@@ -13,13 +13,28 @@ public class PageInfo
 
 	public final URL url;
 	public final int remainingHops;
-	public final String fileName;
+	private final String fileName;
 
 	public PageInfo(URL url, int remainingHops)
 	{
 		this.url = url;
 		this.remainingHops = remainingHops;
-		fileName = Main.FOLDER_NAME + "/" + makeFileName(url);
+		fileName = makeFileName(url);
+	}
+	
+	/**
+	 * Gets the file name, with forward slashes and colons replaced by hex.
+	 * @return Formatted String form of the web URL
+	 */
+	public String getFileName() {
+		return fileName;
+	}
+	
+	/** 
+	 * @return The downloaded file location
+	 */
+	public String getDLFileName() {
+		return Main.DOWNLOAD_FOLDER + "/" + fileName;
 	}
 
 	private String makeFileName(URL url)
