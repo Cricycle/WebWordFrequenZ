@@ -13,8 +13,7 @@ import org.jsoup.select.Elements;
 
 import util.PageInfo;
 
-public class LinkFinder
-	implements Runnable
+public class LinkFinder implements Runnable
 {
 
 	private final PageInfo pageInfo;
@@ -46,57 +45,30 @@ public class LinkFinder
 
 			// for each link in file, add link to outboundQueue
 
-			// <a> links
 			Elements aElements = doc.getElementsByTag("a");
-			for (int i = 0; i < aElements.size(); i++)
-			{
-				Element e = aElements.get(i);
-				String linkString = e.attr("href");
-				PageInfo pi;
-				try
-				{
-					pi = new PageInfo(new URL(linkString), pageInfo.remainingHops - 1);
-				}
-				catch (MalformedURLException e1)
-				{
-					throw new RuntimeException(e1);
-				}
-				outboundQueue.add(pi);
-			}
-
-			// <nav> links
 			Elements navElements = doc.getElementsByTag("nav");
-			for (int i = 0; i < navElements.size(); i++)
-			{
-				Element e = navElements.get(i);
-				String linkString = e.attr("href");
-				PageInfo pi;
-				try
-				{
-					pi = new PageInfo(new URL(linkString), pageInfo.remainingHops - 1);
-				}
-				catch (MalformedURLException e1)
-				{
-					throw new RuntimeException(e1);
-				}
-				outboundQueue.add(pi);
-			}
-
-			// <link> links
 			Elements linkElements = doc.getElementsByTag("link");
-			for (int i = 0; i < linkElements.size(); i++)
+
+			Elements allElements = new Elements();
+			allElements.addAll(aElements); // <a> links
+			allElements.addAll(navElements); // <nav> links
+			allElements.addAll(linkElements); // <link> links
+
+			for (int i = 0; i < allElements.size(); i++)
 			{
-				Element e = linkElements.get(i);
+				Element e = allElements.get(i);
 				String linkString = e.attr("href");
 				PageInfo pi;
 				try
 				{
-					pi = new PageInfo(new URL(linkString), pageInfo.remainingHops - 1);
+					pi = new PageInfo(new URL(linkString),
+							pageInfo.remainingHops - 1);
 				}
 				catch (MalformedURLException e1)
 				{
 					throw new RuntimeException(e1);
 				}
+
 				outboundQueue.add(pi);
 			}
 		}
