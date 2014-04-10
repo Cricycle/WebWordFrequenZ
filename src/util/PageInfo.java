@@ -7,6 +7,7 @@ import main.Main;
 public class PageInfo
 	implements Comparable<PageInfo>
 {
+	public static final PageInfo END = new PageInfo(null, -1);
 
 	public static final String FORWARD_SLASH_REPLACEMENT = "%2F";
 	public static final String COLON_REPLACEMENT = "%3A";
@@ -39,7 +40,7 @@ public class PageInfo
 
 	private String makeFileName(URL url)
 	{
-		String part = url.toExternalForm();
+		String part = String.format("%s", url);
 		return part.replace("/", FORWARD_SLASH_REPLACEMENT).replace(":",
 				COLON_REPLACEMENT);
 	}
@@ -47,7 +48,7 @@ public class PageInfo
 	@Override
 	public int compareTo(PageInfo other)
 	{
-		return (this.remainingHops - other.remainingHops);
+		return (other.remainingHops - remainingHops);
 	}
 
 }

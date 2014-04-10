@@ -13,13 +13,16 @@ public class PageDownloader
 {
 
 	private final PageInfo pi;
-	private final PriorityBlockingQueue<PageInfo> outboundQueue;
+	private final PriorityBlockingQueue<PageInfo> linkOutboundQueue;
+	private final PriorityBlockingQueue<PageInfo> analysisOutboundQueue;
 
 	public PageDownloader(PageInfo pi,
-			PriorityBlockingQueue<PageInfo> outboundQueue)
+			PriorityBlockingQueue<PageInfo> linkOutboundQueue,
+			PriorityBlockingQueue<PageInfo> analysisOutboundQueue)
 	{
 		this.pi = pi;
-		this.outboundQueue = outboundQueue;
+		this.linkOutboundQueue = linkOutboundQueue;
+		this.analysisOutboundQueue = analysisOutboundQueue;
 	}
 
 	public void run()
@@ -36,7 +39,7 @@ public class PageDownloader
 			return;
 		}
 		try (InputStream in = conn.getInputStream();
-				FileOutputStream fos = new FileOutputStream(pi.getDLFileName(), true))
+				FileOutputStream fos = new FileOutputStream(pi.getDLFileName(), false))
 		{
 			byte[] buffer = new byte[1 << 16];
 			int len = -1;
@@ -56,8 +59,9 @@ public class PageDownloader
 		// increment page count
 		PDDriver.incrementPageCount();
 
-		// add page to outboundQueue
-		outboundQueue.add(pi);
+		// add page to Outbound Queues
+		linkOutboundQueue.add(pi);
+		analysisOutboundQueue.add(pi);
 	}
 
 }

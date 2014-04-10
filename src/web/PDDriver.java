@@ -12,15 +12,18 @@ public class PDDriver
 	private static AtomicInteger webpageCount = new AtomicInteger();
 
 	private final int MAX_NUM_PAGES;
-	private final PriorityBlockingQueue<PageInfo> inboundQueue, outboundQueue;
+	private final PriorityBlockingQueue<PageInfo> inboundQueue;
+	private final PriorityBlockingQueue<PageInfo> linkOutboundQueue, analysisOutboundQueue;
 
 	public PDDriver(int MAX_NUM_PAGES,
 			PriorityBlockingQueue<PageInfo> inboundQueue,
-			PriorityBlockingQueue<PageInfo> outboundQueue)
+			PriorityBlockingQueue<PageInfo> linkOutboundQueue,
+			PriorityBlockingQueue<PageInfo> analysisOutboundQueue)
 	{
 		this.MAX_NUM_PAGES = MAX_NUM_PAGES;
 		this.inboundQueue = inboundQueue;
-		this.outboundQueue = outboundQueue;
+		this.linkOutboundQueue = linkOutboundQueue;
+		this.analysisOutboundQueue = analysisOutboundQueue;
 	}
 
 	@Override
@@ -31,7 +34,7 @@ public class PDDriver
 			try
 			{
 				PageInfo pageInfo = inboundQueue.take();
-				Thread t = new Thread(new PageDownloader(pageInfo, outboundQueue));
+				Thread t = new Thread(new PageDownloader(pageInfo, linkOutboundQueue, analysisOutboundQueue));
 				t.start();
 				Thread.sleep(500); // don't kill websites
 			}

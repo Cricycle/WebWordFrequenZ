@@ -34,9 +34,12 @@ public class WordCountAnalyzer extends PageAnalyzer {
 		} catch (IOException e) {
 			throw new RuntimeException("Failed to parse file: " + pi.getDLFileName(), e);
 		}
-		String[] words = doc.text().split(" ");
+		String[] words = doc.text().split("( |\\.)");
 		HashMap<String, Integer> wordCounts = new HashMap<String, Integer>();
 		for (int i = 0; i < words.length; ++i) {
+			if (words[i].length() == 0) continue;
+			
+			words[i] = words[i].toLowerCase();
 			Integer count = wordCounts.get(words[i]);
 			if (count == null)
 				count = 0;
@@ -51,8 +54,15 @@ public class WordCountAnalyzer extends PageAnalyzer {
 		}
 		Collections.sort(pairs);
 		
-		try {
-			PrintWriter out = new PrintWriter(Main.ANALYSIS_FOLDER + "/" + pi.getFileName());
+		String analysisFile = Main.ANALYSIS_FOLDER + "/" + pi.getFileName();
+		System.err.println(analysisFile);
+		try (PrintWriter out = new PrintWriter(analysisFile))
+		{
+			out.println("Beginning of file");
+			for (int i = 0; i < pairs.size(); ++i) {
+				out.println(pairs.get(i));
+			}
+			out.flush();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -72,6 +82,10 @@ public class WordCountAnalyzer extends PageAnalyzer {
 		@Override
 		public int compareTo(WordPair o) {
 			return o.count - count;
+		}
+		
+		public String toString() {
+			return String.format("%s : %d", word, count);
 		}
 		
 	}
