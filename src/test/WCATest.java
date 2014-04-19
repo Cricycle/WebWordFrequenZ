@@ -5,7 +5,7 @@ import java.io.PrintWriter;
 import java.net.URL;
 import java.util.concurrent.PriorityBlockingQueue;
 
-import main.MainDriver;
+import main.Displayer;
 import util.PageInfo;
 import analyze.PADriver;
 
@@ -15,9 +15,9 @@ public class WCATest {
 		URL fakeurl = new URL("http://www.fakeurl.fake");
 		PageInfo pi = new PageInfo(fakeurl, 0);
 		pi.getDLFileName();
-		File dir = new File(MainDriver.DOWNLOAD_FOLDER);
+		File dir = new File(Displayer.DOWNLOAD_FOLDER);
 		dir.mkdirs();
-		dir = new File(MainDriver.ANALYSIS_FOLDER);
+		dir = new File(Displayer.ANALYSIS_FOLDER);
 		dir.mkdirs();
 		PrintWriter out = new PrintWriter(pi.getDLFileName());
 		for (int i = 1; i <= 50000; ++i) {
