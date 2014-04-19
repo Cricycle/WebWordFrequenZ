@@ -50,11 +50,13 @@ public class WordCountAnalyzer extends PageAnalyzer {
 		} catch (IOException e) {
 			throw new RuntimeException("Failed to parse file: " + pi.getDLFileName(), e);
 		}
-		// add more punctuation splitting
-		String[] words = doc.text().split("\\W");
+		// splits on Punctuation and Whitespace characters (all Unicode)
+		String[] words = doc.text().split("\\p{Punct}|\\p{Z}");
+		
 		HashMap<String, Integer> wordCounts = new HashMap<String, Integer>();
 		for (int i = 0; i < words.length; ++i) {
 			if (words[i].length() == 0) continue;
+			if (!words[i].matches("(\\p{Alnum})+")) continue;
 			
 			words[i] = words[i].toLowerCase();
 			Integer count = wordCounts.get(words[i]);
