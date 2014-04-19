@@ -57,7 +57,7 @@ public class LinkFinder implements Runnable
 			for (int i = 0; i < allElements.size(); i++)
 			{
 				Element e = allElements.get(i);
-				String linkString = e.attr("href");
+				String linkString = e.absUrl("href");
 				PageInfo pi;
 				try
 				{
