@@ -1,5 +1,6 @@
 package analyze;
 
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.PriorityBlockingQueue;
 
@@ -42,6 +43,7 @@ public class PADriver
 	 */
 	public void run() {
 		ConcurrentHashMap<String, Integer> sharedWordCount = new ConcurrentHashMap<String, Integer>();
+		ArrayList<Thread> threads = new ArrayList<Thread>();
 		while (true) {
 			try {
 				PageInfo pi = inboundQueue.take();
@@ -49,11 +51,19 @@ public class PADriver
 					break;
 				Thread t = new Thread(new WordCountAnalyzer(pi, sharedWordCount, outboundQueue));
 				t.start();
-				Thread.sleep(200);
+				threads.add(t);
+				Thread.sleep(20);
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
 				e.printStackTrace();
 				break;
+			}
+		}
+		for (Thread t: threads) {
+			try {
+				t.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 		}
 		WordCountAnalyzer.saveDataToFile("word_counts.txt", sharedWordCount);
