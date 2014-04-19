@@ -11,7 +11,7 @@ import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.PriorityBlockingQueue;
 
-import main.MainDriver;
+import main.Displayer;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -95,7 +95,7 @@ public class WordCountAnalyzer extends PageAnalyzer {
 		}
 		Collections.sort(pairs);
 		
-		String analysisFile = MainDriver.ANALYSIS_FOLDER + "/" + filename;
+		String analysisFile = Displayer.ANALYSIS_FOLDER + "/" + filename;
 		System.err.println(analysisFile);
 		try (PrintWriter out = new PrintWriter(analysisFile))
 		{

@@ -2,7 +2,7 @@ package util;
 
 import java.net.URL;
 
-import main.MainDriver;
+import main.Displayer;
 
 public class PageInfo
 	implements Comparable<PageInfo>
@@ -35,7 +35,7 @@ public class PageInfo
 	 * @return The downloaded file location
 	 */
 	public String getDLFileName() {
-		return MainDriver.DOWNLOAD_FOLDER + "/" + fileName;
+		return Displayer.DOWNLOAD_FOLDER + "/" + fileName;
 	}
 
 	private String makeFileName(URL url)

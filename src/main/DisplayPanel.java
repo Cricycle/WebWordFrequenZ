@@ -6,8 +6,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.Timer;
 
 public class DisplayPanel extends JPanel
 	implements ActionListener
@@ -19,6 +21,10 @@ public class DisplayPanel extends JPanel
 	private JTextField hopCountTextField;
 	private JTextField maxNumPagesTextField;
 
+	private JLabel urlLabel;
+	private JLabel hopCountLabel;
+	private JLabel maxNumPagesLabel;
+
 	private JButton startButton;
 
 	public DisplayPanel()
@@ -29,29 +35,55 @@ public class DisplayPanel extends JPanel
 		hopCountTextField = new JTextField(2);
 		maxNumPagesTextField = new JTextField(6);
 
-		// text fields
+		urlLabel = new JLabel("Base page URL:");
+		hopCountLabel = new JLabel("Max number of hops from base page:");
+		maxNumPagesLabel = new JLabel("Max number of pages to be downloaded:");
+
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.gridwidth = GridBagConstraints.REMAINDER;
 
 		constraints.fill = GridBagConstraints.HORIZONTAL;
+		add(urlLabel);
 		add(urlTextField, constraints);
+		add(hopCountLabel);
 		add(hopCountTextField, constraints);
+		add(maxNumPagesLabel);
 		add(maxNumPagesTextField, constraints);
 
-		// start button
 		startButton = new JButton("Start");
 		startButton.addActionListener(this);
 		add(startButton);
+
+		// TODO add TextArea for word count results
 	}
 
+	/**
+	 * This method is called when start button is pressed.
+	 */
 	@Override
 	public void actionPerformed(ActionEvent evt)
 	{
+		// start MainDriver
 		String basePageURL = urlTextField.getText();
 		int maxHopCount = Integer.parseInt(hopCountTextField.getText());
 		int maxNumberOfPages = Integer.parseInt(maxNumPagesTextField.getText());
 
 		MainDriver.run(basePageURL, maxHopCount, maxNumberOfPages);
+
+		// start refresh Timer
+		final int delayMillis = 1000;
+		ActionListener refresher = new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent evt)
+			{
+				// TODO refresh data on GUI
+				
+			}
+
+		};
+		new Timer(delayMillis, refresher).start();
 	}
 
 }

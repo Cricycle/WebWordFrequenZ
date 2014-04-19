@@ -1,31 +1,19 @@
 package main;
 
-import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.PriorityBlockingQueue;
 
-import analyze.PADriver;
 import links.LFDriver;
 import util.PageInfo;
 import web.PDDriver;
+import analyze.PADriver;
 
 public class MainDriver
 {
 
-	public static final String DOWNLOAD_FOLDER = "downloaded_pages";
-	public static final String ANALYSIS_FOLDER = "analyzed_data";
-
 	public static void run(String basePageURL, int maxHopCount, int maxNumberOfPages)
 	{
-		// make folder to store downloaded webpages
-		File downloadFolder = new File(MainDriver.DOWNLOAD_FOLDER);
-		downloadFolder.mkdirs();
-
-		// make folder to store analysis results
-		File analysisFolder = new File(MainDriver.ANALYSIS_FOLDER);
-		analysisFolder.mkdirs();
-
 		// create buffers between tasks
 
 		URL startURL;
