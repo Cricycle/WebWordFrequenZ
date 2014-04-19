@@ -10,31 +10,20 @@ import links.LFDriver;
 import util.PageInfo;
 import web.PDDriver;
 
-public class Main
+public class MainDriver
 {
 
 	public static final String DOWNLOAD_FOLDER = "downloaded_pages";
 	public static final String ANALYSIS_FOLDER = "analyzed_data";
 
-	public static void main(String[] args)
+	public static void run(String basePageURL, int maxHopCount, int maxNumberOfPages)
 	{
-		if (args.length != 3)
-		{
-			System.err
-					.println("Usage: basePageURL maxHopCount maxNumberOfPages");
-			System.exit(1);
-		}
-
-		String basePageURL = args[0];
-		int maxHopCount = Integer.parseInt(args[1]);
-		int maxNumberOfPages = Integer.parseInt(args[2]);
-
 		// make folder to store downloaded webpages
-		File downloadFolder = new File(Main.DOWNLOAD_FOLDER);
+		File downloadFolder = new File(MainDriver.DOWNLOAD_FOLDER);
 		downloadFolder.mkdirs();
 
 		// make folder to store analysis results
-		File analysisFolder = new File(Main.ANALYSIS_FOLDER);
+		File analysisFolder = new File(MainDriver.ANALYSIS_FOLDER);
 		analysisFolder.mkdirs();
 
 		// create buffers between tasks

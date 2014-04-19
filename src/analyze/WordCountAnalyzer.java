@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.PriorityBlockingQueue;
 
-import main.Main;
+import main.MainDriver;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -54,7 +54,7 @@ public class WordCountAnalyzer extends PageAnalyzer {
 		}
 		Collections.sort(pairs);
 		
-		String analysisFile = Main.ANALYSIS_FOLDER + "/" + pi.getFileName();
+		String analysisFile = MainDriver.ANALYSIS_FOLDER + "/" + pi.getFileName();
 		System.err.println(analysisFile);
 		try (PrintWriter out = new PrintWriter(analysisFile))
 		{
