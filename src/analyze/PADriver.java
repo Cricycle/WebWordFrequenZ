@@ -1,5 +1,6 @@
 package analyze;
 
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.PriorityBlockingQueue;
 
 import util.PageInfo;
@@ -35,13 +36,18 @@ public class PADriver
 		this.outboundQueue = outboundQueue;
 	}
 	
+	/**
+	 * While there are still things on the inboundQueue, the PageInfo is taken, passed
+	 * to a new WorkCountAnalyzer, and finally we write all the analyzed data to a file.
+	 */
 	public void run() {
+		ConcurrentHashMap<String, Integer> sharedWordCount = new ConcurrentHashMap<String, Integer>();
 		while (true) {
 			try {
 				PageInfo pi = inboundQueue.take();
 				if (pi == PageInfo.END)
 					break;
-				Thread t = new Thread(new WordCountAnalyzer(pi, outboundQueue));
+				Thread t = new Thread(new WordCountAnalyzer(pi, sharedWordCount, outboundQueue));
 				t.start();
 				Thread.sleep(200);
 			} catch (InterruptedException e) {
@@ -50,6 +56,7 @@ public class PADriver
 				break;
 			}
 		}
+		WordCountAnalyzer.saveDataToFile("word_counts.txt", sharedWordCount);
 	}
 	
 }
