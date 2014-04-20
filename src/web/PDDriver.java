@@ -1,5 +1,6 @@
 package web;
 
+import java.util.HashSet;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -14,6 +15,7 @@ public class PDDriver
 	private final int MAX_NUM_PAGES;
 	private final PriorityBlockingQueue<PageInfo> inboundQueue;
 	private final PriorityBlockingQueue<PageInfo> linkOutboundQueue, analysisOutboundQueue;
+	private HashSet<PageInfo> downloadedPages = new HashSet<PageInfo>();
 
 	public PDDriver(int MAX_NUM_PAGES,
 			PriorityBlockingQueue<PageInfo> inboundQueue,
@@ -36,9 +38,13 @@ public class PDDriver
 			try
 			{
 				PageInfo pageInfo = inboundQueue.take();
-				Thread t = new Thread(new PageDownloader(pageInfo, linkOutboundQueue, analysisOutboundQueue));
-				t.start();
-				Thread.sleep(500); // don't kill websites
+				if (downloadedPages.add(pageInfo))
+				{
+					Thread t = new Thread(new PageDownloader(pageInfo,
+							linkOutboundQueue, analysisOutboundQueue));
+					t.start();
+					Thread.sleep(500); // don't kill websites
+				}
 			}
 			catch (InterruptedException e)
 			{
