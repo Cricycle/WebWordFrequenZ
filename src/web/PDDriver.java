@@ -24,6 +24,8 @@ public class PDDriver
 		this.inboundQueue = inboundQueue;
 		this.linkOutboundQueue = linkOutboundQueue;
 		this.analysisOutboundQueue = analysisOutboundQueue;
+
+		resetPageCount();
 	}
 
 	@Override
@@ -56,7 +58,7 @@ public class PDDriver
 		return webpageCount.incrementAndGet();
 	}
 
-	public static void resetPageCount()
+	private static void resetPageCount()
 	{
 		webpageCount.set(0);
 	}
