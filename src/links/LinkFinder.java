@@ -58,18 +58,36 @@ public class LinkFinder implements Runnable
 			{
 				Element e = allElements.get(i);
 				String linkString = e.absUrl("href");
-				PageInfo pi;
+				boolean okayToLink = true;
+				PageInfo pi = null;
+				
 				try
 				{
-					pi = new PageInfo(new URL(linkString),
-							pageInfo.remainingHops - 1);
+					URL url = new URL(linkString);
+					String urlpath = url.getPath();
+					// check if we care about the file
+					int idx = urlpath.lastIndexOf('.');
+					if (idx != -1) {
+						// it has a file type 
+						String fileType = urlpath.substring(idx+1);
+						fileType = fileType.toLowerCase();
+						okayToLink = (fileType.equals("html")
+								|| fileType.equals("htm")
+								|| fileType.equals("txt"));
+					}
+					if (okayToLink) {
+						pi = new PageInfo(url, pageInfo.remainingHops - 1);
+					}
 				}
 				catch (MalformedURLException e1)
 				{
+					System.err.println("Bad URL: >" + linkString + "<");
 					throw new RuntimeException(e1);
 				}
-
-				outboundQueue.add(pi);
+				
+				if (okayToLink) {
+					outboundQueue.add(pi);
+				}
 			}
 		}
 
