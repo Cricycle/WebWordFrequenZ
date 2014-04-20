@@ -29,7 +29,7 @@ public class LFDriver
 	public void run()
 	{
 		ArrayList<Thread> threads = new ArrayList<Thread>();
-		while (PDDriver.getPageCount() < MAX_NUM_PAGES)
+		while (true)
 		{
 			try
 			{
@@ -40,10 +40,14 @@ public class LFDriver
 			}
 			catch (InterruptedException e)
 			{
-				e.printStackTrace();
 				break;
 			}
 		}
+
+		while (!download_inboundQueue.isEmpty()) {
+			delete_outboundQueue.add(download_inboundQueue.poll());
+		}
+
 		for (Thread t : threads) {
 			try {
 				t.join();

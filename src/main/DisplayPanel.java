@@ -67,8 +67,9 @@ public class DisplayPanel extends JPanel
 		String basePageURL = urlTextField.getText();
 		int maxHopCount = Integer.parseInt(hopCountTextField.getText());
 		int maxNumberOfPages = Integer.parseInt(maxNumPagesTextField.getText());
-
-		MainDriver.run(basePageURL, maxHopCount, maxNumberOfPages);
+		
+		MainDriver main = new MainDriver();
+		main.run(basePageURL, maxHopCount, maxNumberOfPages);
 
 		// start refresh Timer
 		final int delayMillis = 1000;

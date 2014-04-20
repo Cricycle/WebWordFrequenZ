@@ -47,17 +47,18 @@ public class PADriver
 		while (true) {
 			try {
 				PageInfo pi = inboundQueue.take();
-				if (pi == PageInfo.END)
-					break;
 				Thread t = new Thread(new WordCountAnalyzer(pi, sharedWordCount, outboundQueue));
 				threads.add(t);
 				t.start();
 			} catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				e.printStackTrace();
 				break;
 			}
 		}
+		
+		while (!inboundQueue.isEmpty()) {
+			outboundQueue.add(inboundQueue.poll());
+		}
+		
 		for (Thread t : threads) {
 			try {
 				t.join();

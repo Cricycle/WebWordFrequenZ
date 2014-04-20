@@ -56,11 +56,6 @@ public class DDriver implements Runnable {
 				// Get the next PageInfo object from the queue
 				PageInfo pi = inboundQueue.take();
 				
-				// Check if we should stop
-				if (pi == PageInfo.END) {
-					break;
-				}
-				
 				if (!occurrences.contains(pi)) {
 					// If we haven't seen this PageInfo object before, add it
 					occurrences.add(pi);

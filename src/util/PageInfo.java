@@ -8,7 +8,7 @@ import main.Displayer;
 public class PageInfo
 	implements Comparable<PageInfo>
 {
-	public static final PageInfo END = new PageInfo(null, -1);
+	public static final PageInfo END = new PageInfo(null, Integer.MAX_VALUE);
 
 	public static final String FORWARD_SLASH_REPLACEMENT = "%2F";
 	public static final String COLON_REPLACEMENT = "%3A";

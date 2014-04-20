@@ -13,7 +13,7 @@ import analyze.PADriver;
 public class MainDriver
 {
 
-	public static void run(String basePageURL, int maxHopCount, int maxNumberOfPages)
+	public void run(String basePageURL, int maxHopCount, int maxNumberOfPages)
 	{
 		// create buffers between tasks
 
@@ -50,38 +50,38 @@ public class MainDriver
 		Thread analyzerThread = new Thread(analysisDriver, "AnalyzerThread");
 		Thread deleterThread = new Thread(deletionDriver, "DeleterThread");
 
-		downloaderThread.setDaemon(true);
-		finderThread.setDaemon(true);
-		analyzerThread.setDaemon(true);
-		deleterThread.setDaemon(true);
-
 		downloaderThread.start();
 		finderThread.start();
 		analyzerThread.start();
 		deleterThread.start();
 
 		// wait until all pages have been downloaded
-		while (PDDriver.getPageCount() < maxNumberOfPages);
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		while (PDDriver.getPageCount() < maxNumberOfPages) {
+			try {
+				pdDriver.wait();
+			} catch (InterruptedException e) {
+				break;
+			}
 		}
-		while (!downloaderToAnalyzerQueue.isEmpty());
-		downloaderToAnalyzerQueue.add(PageInfo.END);
-		try {
-			analyzerThread.join();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 		System.err.println("pagecount: " + PDDriver.getPageCount());
 		
-		downloaderThread.interrupt();
-		finderThread.interrupt();
-		analyzerThread.interrupt();
-		deleterThread.interrupt();
+		try {
+			downloaderThread.interrupt();
+			downloaderThread.join();
+			
+			finderThread.interrupt();
+			finderThread.join();
+			
+			analyzerThread.interrupt();
+			analyzerThread.join();
+			
+			deleterThread.interrupt();
+			deleterThread.join();
+		} catch (InterruptedException e) {
+			// very bad things happened
+			e.printStackTrace();
+		}
 	}
 
 }
