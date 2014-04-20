@@ -1,5 +1,6 @@
 package util;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import main.Displayer;
@@ -18,7 +19,32 @@ public class PageInfo
 
 	public PageInfo(URL url, int remainingHops)
 	{
-		this.url = url;
+		if (url == null) {
+			this.url = null;
+			fileName = null;
+			this.remainingHops = remainingHops;
+			return;
+		}
+		
+		String urlstring = url.toExternalForm();
+		String querystr = url.getQuery();
+		String ref = url.getRef();
+		
+		if (querystr != null) {
+			int idx = urlstring.lastIndexOf(querystr);
+			urlstring = urlstring.substring(0, idx-1);
+		}
+		
+		if (ref != null) {
+			int idx = urlstring.lastIndexOf(ref);
+			urlstring = urlstring.substring(0, idx-1);
+		}
+		
+		try {
+			this.url = new URL(urlstring);
+		} catch (MalformedURLException e) {
+			throw new RuntimeException(e);
+		}
 		this.remainingHops = remainingHops;
 		fileName = makeFileName(url);
 	}
@@ -50,5 +76,16 @@ public class PageInfo
 	{
 		return (other.remainingHops - remainingHops);
 	}
-
+	
+	@Override
+	public int hashCode() {
+		return fileName.hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof PageInfo)) return false;
+		PageInfo pi = (PageInfo)o;
+		return pi.fileName.equals(fileName);
+	}
 }
