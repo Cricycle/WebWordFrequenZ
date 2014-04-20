@@ -51,6 +51,8 @@ public class MainDriver
 		finderThread.setDaemon(true);
 		analyzerThread.setDaemon(true);
 
+		PDDriver.resetPageCount();
+
 		downloaderThread.start();
 		finderThread.start();
 		analyzerThread.start();

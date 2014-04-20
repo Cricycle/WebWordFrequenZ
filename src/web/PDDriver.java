@@ -56,4 +56,9 @@ public class PDDriver
 		return webpageCount.incrementAndGet();
 	}
 
+	public static void resetPageCount()
+	{
+		webpageCount.set(0);
+	}
+
 }
