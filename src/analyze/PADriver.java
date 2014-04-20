@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.PriorityBlockingQueue;
 
+import util.Driver;
 import util.PageInfo;
 
 /**
@@ -13,7 +14,7 @@ import util.PageInfo;
  * @author Alex
  *
  */
-public class PADriver
+public class PADriver extends Driver
 	implements Runnable
 {
 	
@@ -47,7 +48,7 @@ public class PADriver
 		while (true) {
 			try {
 				PageInfo pi = inboundQueue.take();
-				Thread t = new Thread(new WordCountAnalyzer(pi, sharedWordCount, outboundQueue));
+				Thread t = new Thread(new WordCountAnalyzer(pi, this, sharedWordCount, outboundQueue));
 				threads.add(t);
 				t.start();
 			} catch (InterruptedException e) {

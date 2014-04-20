@@ -9,9 +9,10 @@ import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import main.Displayer;
+import util.Driver;
 import util.PageInfo;
 
-public class PDDriver
+public class PDDriver extends Driver
 	implements Runnable
 {
 

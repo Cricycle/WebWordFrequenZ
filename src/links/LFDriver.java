@@ -3,10 +3,10 @@ package links;
 import java.util.ArrayList;
 import java.util.concurrent.PriorityBlockingQueue;
 
+import util.Driver;
 import util.PageInfo;
-import web.PDDriver;
 
-public class LFDriver
+public class LFDriver extends Driver
 	implements Runnable
 {
 

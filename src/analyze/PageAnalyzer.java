@@ -2,6 +2,7 @@ package analyze;
 
 import java.util.concurrent.PriorityBlockingQueue;
 
+import util.Driver;
 import util.PageInfo;
 
 /**
@@ -22,15 +23,21 @@ public abstract class PageAnalyzer implements Runnable {
 	private final PriorityBlockingQueue<PageInfo> outboundQueue;
 	
 	/**
+	 * Parent Driver to which we report completion
+	 */
+	private final Driver parentDriver;
+	
+	/**
 	 * Creates a new PageAnalyzer, which has a final implementation of
 	 * the run() method.
 	 * @param pi The PageInfo to be analyzed
 	 * @param outboundQueue The outboundQueue of finished PageInfo
 	 */
-	public PageAnalyzer(PageInfo pi,
+	public PageAnalyzer(PageInfo pi, Driver parentDriver,
 			PriorityBlockingQueue<PageInfo> outboundQueue) {
 		this.pi = pi;
 		this.outboundQueue = outboundQueue;
+		this.parentDriver = parentDriver;
 	}
 	
 	/**
@@ -39,6 +46,7 @@ public abstract class PageAnalyzer implements Runnable {
 	public final void run() {
 		analyze(pi);
 		outboundQueue.add(pi);
+		parentDriver.decrementThreadCount();
 	}
 	
 	/**

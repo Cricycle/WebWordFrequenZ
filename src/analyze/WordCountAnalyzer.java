@@ -16,6 +16,7 @@ import main.Displayer;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import util.Driver;
 import util.PageInfo;
 
 /**
@@ -34,10 +35,10 @@ public class WordCountAnalyzer extends PageAnalyzer {
 	 */
 	private ConcurrentHashMap<String, Integer> sharedMap;
 
-	public WordCountAnalyzer(PageInfo pi,
+	public WordCountAnalyzer(PageInfo pi, Driver parentDriver,
 			ConcurrentHashMap<String, Integer> sharedMap,
 			PriorityBlockingQueue<PageInfo> outboundQueue) {
-		super(pi, outboundQueue);
+		super(pi, parentDriver, outboundQueue);
 		this.sharedMap = sharedMap;
 	}
 

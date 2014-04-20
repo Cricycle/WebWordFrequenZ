@@ -2,14 +2,16 @@ package analyze;
 
 import java.util.concurrent.PriorityBlockingQueue;
 
+import util.Driver;
 import util.PageInfo;
 
 public class CompositeAnalyzer extends PageAnalyzer {
 	
 	private PageAnalyzer[] list;
 	
-	public CompositeAnalyzer(PageInfo pi, PriorityBlockingQueue<PageInfo> outboundQueue, PageAnalyzer ... list) {
-		super(pi, outboundQueue);
+	public CompositeAnalyzer(PageInfo pi, Driver parentDriver,
+			PriorityBlockingQueue<PageInfo> outboundQueue, PageAnalyzer ... list) {
+		super(pi, parentDriver, outboundQueue);
 		this.list = new PageAnalyzer[list.length];
 		System.arraycopy(list, 0, this.list, 0, list.length);
 	}

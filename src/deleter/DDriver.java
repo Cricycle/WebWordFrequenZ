@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.concurrent.PriorityBlockingQueue;
 
+import util.Driver;
 import util.PageInfo;
 
 /**
@@ -13,7 +14,8 @@ import util.PageInfo;
  * @author Alex
  *
  */
-public class DDriver implements Runnable {
+public class DDriver extends Driver 
+	implements Runnable {
 	
 	/**
 	 * InboundQueue of PageInfo instances which have been used
