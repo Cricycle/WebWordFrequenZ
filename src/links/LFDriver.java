@@ -10,17 +10,14 @@ public class LFDriver extends Driver
 	implements Runnable
 {
 
-	private final int MAX_NUM_PAGES;
 	private final PriorityBlockingQueue<PageInfo> download_inboundQueue;
 	private final PriorityBlockingQueue<PageInfo> download_outboundQueue;
 	private final PriorityBlockingQueue<PageInfo> delete_outboundQueue;
 
-	public LFDriver(int MAX_NUM_PAGES,
-			PriorityBlockingQueue<PageInfo> download_inboundQueue,
+	public LFDriver(PriorityBlockingQueue<PageInfo> download_inboundQueue,
 			PriorityBlockingQueue<PageInfo> download_outboundQueue,
 			PriorityBlockingQueue<PageInfo> delete_outboundQueue)
 	{
-		this.MAX_NUM_PAGES = MAX_NUM_PAGES;
 		this.download_inboundQueue = download_inboundQueue;
 		this.download_outboundQueue = download_outboundQueue;
 		this.delete_outboundQueue = delete_outboundQueue;

@@ -13,7 +13,7 @@ public abstract class Driver {
 		unfinishedThreadCount.decrementAndGet();
 	}
 	
-	public int getUnfinishedThreadCount() {
-		return unfinishedThreadCount.get();
+	public boolean allThreadsFinished() {
+		return (unfinishedThreadCount.get() == 0);
 	}
 }
