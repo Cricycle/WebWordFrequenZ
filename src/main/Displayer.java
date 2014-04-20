@@ -4,6 +4,7 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.JApplet;
+import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 public class Displayer extends JApplet
@@ -52,9 +53,20 @@ public class Displayer extends JApplet
 
 	private void createAndShowGUI()
 	{
+		setSize(600, 100);
+
 		DisplayPanel displayPanel = new DisplayPanel();
 		displayPanel.setOpaque(true);
 		setContentPane(displayPanel);
+
+		/*
+		JFrame frame = new JFrame("WebWordFrequenZ");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.add(new DisplayPanel());
+		frame.setSize(600, 100);
+		frame.setLocationByPlatform(true);
+		frame.setVisible(true);
+		*/
 	}
 
 }
