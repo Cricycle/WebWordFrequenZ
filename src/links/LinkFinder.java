@@ -58,6 +58,7 @@ public class LinkFinder implements Runnable
 			{
 				Element e = allElements.get(i);
 				String linkString = e.absUrl("href");
+				if (linkString.equals("")) continue;
 				boolean okayToLink = true;
 				PageInfo pi = null;
 				
@@ -81,8 +82,7 @@ public class LinkFinder implements Runnable
 				}
 				catch (MalformedURLException e1)
 				{
-					System.err.println("Bad URL: >" + linkString + "<");
-					throw new RuntimeException(e1);
+					System.err.println("Bad URL: <" + linkString + ">");
 				}
 				
 				if (okayToLink) {
