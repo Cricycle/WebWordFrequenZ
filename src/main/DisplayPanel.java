@@ -32,8 +32,8 @@ public class DisplayPanel extends JPanel
 		super(new GridBagLayout());
 
 		urlTextField = new JTextField("http://www.example.com", 30);
-		hopCountTextField = new JTextField("0", 2);
-		maxNumPagesTextField = new JTextField("1", 6);
+		hopCountTextField = new JTextField("2", 2);
+		maxNumPagesTextField = new JTextField("10", 6);
 
 		urlLabel = new JLabel("Base page URL:");
 		hopCountLabel = new JLabel("Max number of hops from base page:");

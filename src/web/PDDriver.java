@@ -1,9 +1,13 @@
 package web;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import main.Displayer;
 import util.PageInfo;
 
 public class PDDriver
@@ -16,6 +20,7 @@ public class PDDriver
 	private final PriorityBlockingQueue<PageInfo> inboundQueue;
 	private final PriorityBlockingQueue<PageInfo> linkOutboundQueue, analysisOutboundQueue;
 	private HashSet<PageInfo> downloadedPages = new HashSet<PageInfo>();
+	private PrintWriter pageListWriter;
 
 	public PDDriver(int MAX_NUM_PAGES,
 			PriorityBlockingQueue<PageInfo> inboundQueue,
@@ -26,6 +31,16 @@ public class PDDriver
 		this.inboundQueue = inboundQueue;
 		this.linkOutboundQueue = linkOutboundQueue;
 		this.analysisOutboundQueue = analysisOutboundQueue;
+
+		try
+		{
+			pageListWriter = new PrintWriter(new File(Displayer.ANALYSIS_FOLDER
+					+ "/page_list.txt"));
+		}
+		catch (FileNotFoundException e)
+		{
+			throw new RuntimeException(e);
+		}
 
 		resetPageCount();
 	}
@@ -40,10 +55,15 @@ public class PDDriver
 				PageInfo pageInfo = inboundQueue.take();
 				if (downloadedPages.add(pageInfo))
 				{
+					// start a downloader thread
 					Thread t = new Thread(new PageDownloader(pageInfo,
 							linkOutboundQueue, analysisOutboundQueue));
 					t.start();
-					Thread.sleep(500); // don't kill websites
+					
+					// write webpage to file
+					pageListWriter.println(pageInfo.url.toExternalForm());
+					
+					Thread.sleep(200); // don't kill websites
 				}
 			}
 			catch (InterruptedException e)
@@ -52,6 +72,8 @@ public class PDDriver
 				e.printStackTrace();
 			}
 		}
+
+		pageListWriter.close();
 	}
 
 	public static int getPageCount()
