@@ -57,7 +57,7 @@ public class DDriver implements Runnable {
 				PageInfo pi = inboundQueue.take();
 				
 				// Check if we should stop
-				if (pi.equals(PageInfo.END)) {
+				if (pi == PageInfo.END) {
 					break;
 				}
 				
@@ -67,20 +67,19 @@ public class DDriver implements Runnable {
 				} else {
 					// We have seen it before, now we delete it.
 					Thread t = new Thread(new PageDeleter(pi, retryCount));
-					t.start();
 					threads.add(t);
+					t.start();
 				}
 				// Wait a short time period to slow the creation of new threads
 				Thread.sleep(20);
 			} catch (InterruptedException e) {
 				// We were interrupted, should exit the loop immediately.
-				e.printStackTrace();
 				break;
 			}
 		}
 		
 		// Iterate through the created threads, make sure they have all finished
-		for (Thread t: threads) {
+		for (Thread t : threads) {
 			try {
 				t.join();
 			} catch (InterruptedException e) {
@@ -88,6 +87,7 @@ public class DDriver implements Runnable {
 				break;
 			}
 		}
+		System.err.printf("DeletionDriver has exited.%n");
 	}
 
 }

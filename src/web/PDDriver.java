@@ -3,6 +3,7 @@ package web;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -48,6 +49,7 @@ public class PDDriver
 	@Override
 	public void run()
 	{
+		ArrayList<Thread> threads = new ArrayList<Thread>();
 		while (PDDriver.getPageCount() < MAX_NUM_PAGES)
 		{
 			try
@@ -58,22 +60,33 @@ public class PDDriver
 					// start a downloader thread
 					Thread t = new Thread(new PageDownloader(pageInfo,
 							linkOutboundQueue, analysisOutboundQueue));
+					threads.add(t);
 					t.start();
-					
+
 					// write webpage to file
 					pageListWriter.println(pageInfo.url.toExternalForm());
-					
+
 					Thread.sleep(200); // don't kill websites
 				}
 			}
 			catch (InterruptedException e)
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+				break;
 			}
 		}
 
 		pageListWriter.close();
+
+		for (Thread t : threads) {
+			try {
+				t.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				break;
+			}
+		}
+		System.err.printf("PageDownloadDriver has exited.%n");
 	}
 
 	public static int getPageCount()

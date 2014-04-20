@@ -50,23 +50,25 @@ public class PADriver
 				if (pi == PageInfo.END)
 					break;
 				Thread t = new Thread(new WordCountAnalyzer(pi, sharedWordCount, outboundQueue));
-				t.start();
 				threads.add(t);
-				Thread.sleep(20);
+				t.start();
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
 				e.printStackTrace();
 				break;
 			}
 		}
-		for (Thread t: threads) {
+		for (Thread t : threads) {
 			try {
 				t.join();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
+				break;
 			}
 		}
+		
 		WordCountAnalyzer.saveDataToFile("word_counts.txt", sharedWordCount);
+		System.err.printf("PageAnalysisDriver has exited.%n");
 	}
 	
 }
