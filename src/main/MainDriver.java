@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.PriorityBlockingQueue;
 
+import deleter.DDriver;
 import links.LFDriver;
 import util.PageInfo;
 import web.PDDriver;
@@ -40,20 +41,24 @@ public class MainDriver
 				finderToDownloaderQueue, downloaderToFinderQueue,
 				downloaderToAnalyzerQueue);
 		LFDriver lfDriver = new LFDriver(maxNumberOfPages,
-				downloaderToFinderQueue, finderToDownloaderQueue);
+				downloaderToFinderQueue, finderToDownloaderQueue, toDeleterQueue);
 		PADriver analysisDriver = new PADriver(downloaderToAnalyzerQueue, toDeleterQueue);
+		DDriver deletionDriver = new DDriver(toDeleterQueue, 3); // retry failed deletion 3 times
 
 		Thread downloaderThread = new Thread(pdDriver, "DownloaderThread");
 		Thread finderThread = new Thread(lfDriver, "FinderThread");
 		Thread analyzerThread = new Thread(analysisDriver, "AnalyzerThread");
+		Thread deleterThread = new Thread(deletionDriver, "DeleterThread");
 
 		downloaderThread.setDaemon(true);
 		finderThread.setDaemon(true);
 		analyzerThread.setDaemon(true);
+		deleterThread.setDaemon(true);
 
 		downloaderThread.start();
 		finderThread.start();
 		analyzerThread.start();
+		deleterThread.start();
 
 		// wait until all pages have been downloaded
 		while (PDDriver.getPageCount() < maxNumberOfPages);
@@ -71,6 +76,12 @@ public class MainDriver
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		System.err.println("pagecount: " + PDDriver.getPageCount());
+		
+		downloaderThread.interrupt();
+		finderThread.interrupt();
+		analyzerThread.interrupt();
+		deleterThread.interrupt();
 	}
 
 }

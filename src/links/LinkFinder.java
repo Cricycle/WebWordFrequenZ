@@ -17,13 +17,16 @@ public class LinkFinder implements Runnable
 {
 
 	private final PageInfo pageInfo;
-	private final PriorityBlockingQueue<PageInfo> outboundQueue;
+	private final PriorityBlockingQueue<PageInfo> download_outboundQueue;
+	private final PriorityBlockingQueue<PageInfo> delete_outboundQueue;
 
 	public LinkFinder(PageInfo pageInfo,
-			PriorityBlockingQueue<PageInfo> outboundQueue)
+			PriorityBlockingQueue<PageInfo> download_outboundQueue,
+			PriorityBlockingQueue<PageInfo> delete_outboundQueue)
 	{
 		this.pageInfo = pageInfo;
-		this.outboundQueue = outboundQueue;
+		this.delete_outboundQueue = delete_outboundQueue;
+		this.download_outboundQueue = download_outboundQueue;
 	}
 
 	@Override
@@ -86,12 +89,12 @@ public class LinkFinder implements Runnable
 				}
 				
 				if (okayToLink) {
-					outboundQueue.add(pi);
+					download_outboundQueue.add(pi);
 				}
 			}
 		}
 
-		// TODO let the delete task know that we are done finding links in file
+		delete_outboundQueue.add(pageInfo);
 	}
 
 }

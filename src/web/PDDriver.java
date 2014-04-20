@@ -48,10 +48,11 @@ public class PDDriver
 			}
 			catch (InterruptedException e)
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+				break;
 			}
 		}
+		System.err.printf("PageDownloadDriver has exited.%n");
 	}
 
 	public static int getPageCount()

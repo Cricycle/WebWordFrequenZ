@@ -57,7 +57,7 @@ public class DDriver implements Runnable {
 				PageInfo pi = inboundQueue.take();
 				
 				// Check if we should stop
-				if (pi.equals(PageInfo.END)) {
+				if (pi == PageInfo.END) {
 					break;
 				}
 				
@@ -74,7 +74,6 @@ public class DDriver implements Runnable {
 				Thread.sleep(20);
 			} catch (InterruptedException e) {
 				// We were interrupted, should exit the loop immediately.
-				e.printStackTrace();
 				break;
 			}
 		}
@@ -88,6 +87,7 @@ public class DDriver implements Runnable {
 				break;
 			}
 		}
+		System.err.printf("DeletionDriver has exited.%n");
 	}
 
 }
