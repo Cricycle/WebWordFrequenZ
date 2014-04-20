@@ -1,5 +1,6 @@
 package web;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -33,6 +34,7 @@ public class PDDriver
 	@Override
 	public void run()
 	{
+		ArrayList<Thread> threads = new ArrayList<Thread>();
 		while (PDDriver.getPageCount() < MAX_NUM_PAGES)
 		{
 			try
@@ -43,11 +45,20 @@ public class PDDriver
 					Thread t = new Thread(new PageDownloader(pageInfo,
 							linkOutboundQueue, analysisOutboundQueue));
 					t.start();
+					threads.add(t);
 					Thread.sleep(500); // don't kill websites
 				}
 			}
 			catch (InterruptedException e)
 			{
+				e.printStackTrace();
+				break;
+			}
+		}
+		for (Thread t: threads) {
+			try {
+				t.join();
+			} catch (InterruptedException e) {
 				e.printStackTrace();
 				break;
 			}

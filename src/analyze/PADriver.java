@@ -64,8 +64,10 @@ public class PADriver
 				t.join();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
+				break;
 			}
 		}
+		
 		WordCountAnalyzer.saveDataToFile("word_counts.txt", sharedWordCount);
 		System.err.printf("PageAnalysisDriver has exited.%n");
 	}

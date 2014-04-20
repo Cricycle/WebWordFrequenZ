@@ -1,5 +1,6 @@
 package links;
 
+import java.util.ArrayList;
 import java.util.concurrent.PriorityBlockingQueue;
 
 import util.PageInfo;
@@ -27,6 +28,7 @@ public class LFDriver
 
 	public void run()
 	{
+		ArrayList<Thread> threads = new ArrayList<Thread>();
 		while (PDDriver.getPageCount() < MAX_NUM_PAGES)
 		{
 			try
@@ -34,9 +36,18 @@ public class LFDriver
 				PageInfo pageInfo = download_inboundQueue.take();
 				Thread t = new Thread(new LinkFinder(pageInfo, download_outboundQueue, delete_outboundQueue));
 				t.start();
+				threads.add(t);
 			}
 			catch (InterruptedException e)
 			{
+				e.printStackTrace();
+				break;
+			}
+		}
+		for (Thread t: threads) {
+			try {
+				t.join();
+			} catch (InterruptedException e) {
 				e.printStackTrace();
 				break;
 			}
