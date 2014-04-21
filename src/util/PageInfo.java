@@ -18,48 +18,57 @@ public class PageInfo
 
 	public PageInfo(URL url, int remainingHops)
 	{
-		if (url == null) {
+		if (url == null)
+		{
 			this.url = null;
 			fileName = null;
 			this.remainingHops = remainingHops;
 			return;
 		}
-		
+
 		String urlstring = url.toExternalForm();
 		String querystr = url.getQuery();
 		String ref = url.getRef();
-		
-		if (querystr != null) {
+
+		if (querystr != null)
+		{
 			int idx = urlstring.lastIndexOf(querystr);
-			urlstring = urlstring.substring(0, idx-1);
+			urlstring = urlstring.substring(0, idx - 1);
 		}
-		
-		if (ref != null) {
+
+		if (ref != null)
+		{
 			int idx = urlstring.lastIndexOf(ref);
-			urlstring = urlstring.substring(0, idx-1);
+			urlstring = urlstring.substring(0, idx - 1);
 		}
-		
-		try {
+
+		try
+		{
 			this.url = new URL(urlstring);
-		} catch (MalformedURLException e) {
+		}
+		catch (MalformedURLException e)
+		{
 			throw new RuntimeException(e);
 		}
 		this.remainingHops = remainingHops;
 		fileName = makeFileName(url);
 	}
-	
+
 	/**
 	 * Gets the file name, with forward slashes and colons replaced by hex.
+	 * 
 	 * @return Formatted String form of the web URL
 	 */
-	public String getFileName() {
+	public String getFileName()
+	{
 		return fileName;
 	}
-	
-	/** 
+
+	/**
 	 * @return The downloaded file location
 	 */
-	public String getDLFileName() {
+	public String getDLFileName()
+	{
 		return MainDriver.DOWNLOAD_FOLDER + "/" + fileName;
 	}
 
@@ -75,16 +84,20 @@ public class PageInfo
 	{
 		return (other.remainingHops - remainingHops);
 	}
-	
+
 	@Override
-	public int hashCode() {
+	public int hashCode()
+	{
 		return fileName.hashCode();
 	}
-	
+
 	@Override
-	public boolean equals(Object o) {
-		if (!(o instanceof PageInfo)) return false;
-		PageInfo pi = (PageInfo)o;
+	public boolean equals(Object o)
+	{
+		if (!(o instanceof PageInfo))
+			return false;
+		PageInfo pi = (PageInfo) o;
 		return pi.fileName.equals(fileName);
 	}
+
 }

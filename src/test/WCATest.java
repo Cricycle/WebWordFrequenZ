@@ -10,9 +10,11 @@ import main.MainDriver;
 import util.PageInfo;
 import analyze.PADriver;
 
-public class WCATest {
-	
-	public static void main(String[] args) throws Exception {
+public class WCATest
+{
+
+	public static void main(String[] args) throws Exception
+	{
 		URL fakeurl = new URL("http://www.fakeurl.fake");
 		PageInfo pi = new PageInfo(fakeurl, 0);
 		pi.getDLFileName();
@@ -21,15 +23,20 @@ public class WCATest {
 		dir = new File(MainDriver.ANALYSIS_FOLDER);
 		dir.mkdirs();
 		PrintWriter out = new PrintWriter(pi.getDLFileName());
-		for (int i = 1; i <= 50000; ++i) {
+		for (int i = 1; i <= 50000; ++i)
+		{
 			String conv = "";
 			int t = i;
-			while (t >= 0) {
+			while (t >= 0)
+			{
 				int rem = t % 36;
 				t /= 36;
-				if (rem < 26) conv += (char)('a' + rem);
-				else	conv += '0' + (rem - 26);
-				if (t == 0) break;
+				if (rem < 26)
+					conv += (char) ('a' + rem);
+				else
+					conv += '0' + (rem - 26);
+				if (t == 0)
+					break;
 			}
 			out.write(conv + ' ');
 		}
@@ -46,8 +53,9 @@ public class WCATest {
 		for (int i = 0; i < testSize; ++i)
 			fakeinqueue.add(pi);
 		(padthread = new Thread(pad)).start();
-		
-		while (!fakeinqueue.isEmpty()) {
+
+		while (!fakeinqueue.isEmpty())
+		{
 			System.out.printf("Queue still has %d items%n", fakeinqueue.size());
 			Thread.sleep(500);
 		}
@@ -56,5 +64,5 @@ public class WCATest {
 		padthread.interrupt();
 		padthread.join();
 	}
-	
+
 }

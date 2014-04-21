@@ -15,7 +15,7 @@ public class LFDriver extends Driver
 	 * Shared semaphore to allow taking from a queue
 	 */
 	private final Semaphore executionSemaphore;
-	
+
 	private final PriorityBlockingQueue<PageInfo> download_inboundQueue;
 	private final PriorityBlockingQueue<PageInfo> download_outboundQueue;
 	private final PriorityBlockingQueue<PageInfo> delete_outboundQueue;
@@ -31,6 +31,7 @@ public class LFDriver extends Driver
 		this.executionSemaphore = executionSemaphore;
 	}
 
+	@Override
 	public void run()
 	{
 		ArrayList<Thread> threads = new ArrayList<Thread>();
@@ -38,15 +39,20 @@ public class LFDriver extends Driver
 		{
 			try
 			{
-				synchronized (download_inboundQueue) {
-					while (download_inboundQueue.isEmpty()) { download_inboundQueue.wait(); }
+				synchronized (download_inboundQueue)
+				{
+					while (download_inboundQueue.isEmpty())
+					{
+						download_inboundQueue.wait();
+					}
 				}
 				executionSemaphore.acquire();
 				PageInfo pageInfo = download_inboundQueue.take();
 				incrementThreadCount();
 				executionSemaphore.release();
-				
-				Thread t = new Thread(new LinkFinder(pageInfo, this, download_outboundQueue, delete_outboundQueue));
+
+				Thread t = new Thread(new LinkFinder(pageInfo, this,
+						download_outboundQueue, delete_outboundQueue));
 				threads.add(t);
 				t.start();
 			}
@@ -56,17 +62,23 @@ public class LFDriver extends Driver
 			}
 		}
 
-		while (!download_inboundQueue.isEmpty()) {
+		while (!download_inboundQueue.isEmpty())
+		{
 			delete_outboundQueue.add(download_inboundQueue.poll());
 		}
-		synchronized (delete_outboundQueue) {
+		synchronized (delete_outboundQueue)
+		{
 			delete_outboundQueue.notify();
 		}
 
-		for (Thread t : threads) {
-			try {
+		for (Thread t : threads)
+		{
+			try
+			{
 				t.join();
-			} catch (InterruptedException e) {
+			}
+			catch (InterruptedException e)
+			{
 				e.printStackTrace();
 				break;
 			}

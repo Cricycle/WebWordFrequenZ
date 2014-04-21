@@ -18,15 +18,16 @@ public class PDDriver extends Driver
 {
 
 	private AtomicInteger webpageCount = new AtomicInteger(0);
-	
+
 	/**
 	 * Shared semaphore to allow taking from a queue
 	 */
 	private final Semaphore executionSemaphore;
-	
+
 	private final int MAX_NUM_PAGES;
 	private final PriorityBlockingQueue<PageInfo> inboundQueue;
-	private final PriorityBlockingQueue<PageInfo> linkOutboundQueue, analysisOutboundQueue;
+	private final PriorityBlockingQueue<PageInfo> linkOutboundQueue,
+			analysisOutboundQueue;
 	private HashSet<PageInfo> downloadedPages = new HashSet<PageInfo>();
 	private PrintWriter pageListWriter;
 
@@ -43,8 +44,8 @@ public class PDDriver extends Driver
 
 		try
 		{
-			pageListWriter = new PrintWriter(new File(MainDriver.ANALYSIS_FOLDER
-					+ "/page_list.txt"));
+			pageListWriter = new PrintWriter(new File(
+					MainDriver.ANALYSIS_FOLDER + "/page_list.txt"));
 		}
 		catch (FileNotFoundException e)
 		{
@@ -60,12 +61,16 @@ public class PDDriver extends Driver
 		{
 			try
 			{
-				synchronized (inboundQueue) {
-					while (inboundQueue.isEmpty()) { inboundQueue.wait(); }
+				synchronized (inboundQueue)
+				{
+					while (inboundQueue.isEmpty())
+					{
+						inboundQueue.wait();
+					}
 				}
 				executionSemaphore.acquire();
 				PageInfo pageInfo = inboundQueue.take();
-				
+
 				if (downloadedPages.add(pageInfo))
 				{
 					incrementThreadCount();
@@ -79,9 +84,11 @@ public class PDDriver extends Driver
 					pageListWriter.println(pageInfo.url.toExternalForm());
 
 					executionSemaphore.release();
-					
+
 					Thread.sleep(200); // don't kill websites
-				} else {
+				}
+				else
+				{
 					executionSemaphore.release();
 				}
 			}
@@ -92,24 +99,32 @@ public class PDDriver extends Driver
 		}
 
 		pageListWriter.close();
-		
-		for (Thread t : threads) {
-			try {
+
+		for (Thread t : threads)
+		{
+			try
+			{
 				t.join();
-			} catch (InterruptedException e) {
+			}
+			catch (InterruptedException e)
+			{
 				e.printStackTrace();
 				break;
 			}
 		}
-		
-		while (getPageCount() >= MAX_NUM_PAGES) {
-			try {
+
+		while (getPageCount() >= MAX_NUM_PAGES)
+		{
+			try
+			{
 				inboundQueue.take();
-			} catch (InterruptedException e) {
+			}
+			catch (InterruptedException e)
+			{
 				break;
 			}
 		}
-		
+
 		System.out.printf("PageDownloadDriver has exited.%n");
 	}
 

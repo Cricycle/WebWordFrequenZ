@@ -14,7 +14,8 @@ import org.jsoup.select.Elements;
 import util.Driver;
 import util.PageInfo;
 
-public class LinkFinder implements Runnable
+public class LinkFinder
+	implements Runnable
 {
 
 	private final PageInfo pageInfo;
@@ -22,7 +23,7 @@ public class LinkFinder implements Runnable
 	private final PriorityBlockingQueue<PageInfo> download_outboundQueue;
 	private final PriorityBlockingQueue<PageInfo> delete_outboundQueue;
 
-	public LinkFinder(PageInfo pageInfo, Driver parentDriver, 
+	public LinkFinder(PageInfo pageInfo, Driver parentDriver,
 			PriorityBlockingQueue<PageInfo> download_outboundQueue,
 			PriorityBlockingQueue<PageInfo> delete_outboundQueue)
 	{
@@ -64,25 +65,28 @@ public class LinkFinder implements Runnable
 			{
 				Element e = allElements.get(i);
 				String linkString = e.absUrl("href");
-				if (linkString.equals("")) continue;
+				if (linkString.equals(""))
+					continue;
 				boolean okayToLink = true;
 				PageInfo pi = null;
-				
+
 				try
 				{
 					URL url = new URL(linkString);
 					String urlpath = url.getPath();
 					// check if we care about the file
 					int idx = urlpath.lastIndexOf('.');
-					if (idx != -1) {
-						// it has a file type 
-						String fileType = urlpath.substring(idx+1);
+					if (idx != -1)
+					{
+						// it has a file type
+						String fileType = urlpath.substring(idx + 1);
 						fileType = fileType.toLowerCase();
 						okayToLink = (fileType.equals("html")
-								|| fileType.equals("htm")
-								|| fileType.equals("txt"));
+								|| fileType.equals("htm") || fileType
+								.equals("txt"));
 					}
-					if (okayToLink) {
+					if (okayToLink)
+					{
 						pi = new PageInfo(url, pageInfo.remainingHops - 1);
 					}
 				}
@@ -90,10 +94,12 @@ public class LinkFinder implements Runnable
 				{
 					System.err.println("Bad URL: <" + linkString + ">");
 				}
-				
-				if (okayToLink) {
+
+				if (okayToLink)
+				{
 					download_outboundQueue.add(pi);
-					synchronized (download_outboundQueue) {
+					synchronized (download_outboundQueue)
+					{
 						download_outboundQueue.notify();
 					}
 				}
@@ -101,7 +107,8 @@ public class LinkFinder implements Runnable
 		}
 
 		delete_outboundQueue.add(pageInfo);
-		synchronized (delete_outboundQueue) {
+		synchronized (delete_outboundQueue)
+		{
 			delete_outboundQueue.notify();
 		}
 		parentDriver.decrementThreadCount();

@@ -43,7 +43,8 @@ public class PageDownloader
 			return;
 		}
 		try (InputStream in = conn.getInputStream();
-				FileOutputStream fos = new FileOutputStream(pi.getDLFileName(), false))
+				FileOutputStream fos = new FileOutputStream(pi.getDLFileName(),
+						false))
 		{
 			byte[] buffer = new byte[1 << 16];
 			int len = -1;
@@ -66,13 +67,15 @@ public class PageDownloader
 		// add page to Outbound Queues
 		linkOutboundQueue.add(pi);
 		analysisOutboundQueue.add(pi);
-		synchronized (linkOutboundQueue) {
+		synchronized (linkOutboundQueue)
+		{
 			linkOutboundQueue.notify();
 		}
-		synchronized (analysisOutboundQueue) {
+		synchronized (analysisOutboundQueue)
+		{
 			analysisOutboundQueue.notify();
 		}
-		
+
 		parentDriver.decrementThreadCount();
 	}
 

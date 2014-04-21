@@ -22,7 +22,8 @@ public class MainDriver
 	{
 		if (args.length != 3)
 		{
-			System.err.println("Usage: basePageURL maxHopCount maxNumberOfPages");
+			System.err
+					.println("Usage: basePageURL maxHopCount maxNumberOfPages");
 			System.exit(1);
 		}
 
@@ -78,7 +79,8 @@ public class MainDriver
 				executionSemaphore, finderToDownloaderQueue, toDeleterQueue);
 		PADriver analysisDriver = new PADriver(downloaderToAnalyzerQueue,
 				executionSemaphore, toDeleterQueue);
-		DDriver deletionDriver = new DDriver(toDeleterQueue, executionSemaphore, 3); // retry failed deletion 3 times
+		DDriver deletionDriver = new DDriver(toDeleterQueue,
+				executionSemaphore, 3); // retry failed deletion 3 times
 
 		Thread downloaderThread = new Thread(pdDriver, "DownloaderThread");
 		Thread finderThread = new Thread(lfDriver, "FinderThread");
@@ -112,7 +114,9 @@ public class MainDriver
 					executionSemaphore.release(4);
 					System.out.println("Determined that nothing is running.");
 					break;
-				} else {
+				}
+				else
+				{
 					executionSemaphore.release(4);
 				}
 			}

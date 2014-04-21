@@ -9,7 +9,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.Timer;
 
 public class DisplayPanel extends JPanel
 	implements ActionListener
@@ -53,8 +52,6 @@ public class DisplayPanel extends JPanel
 		startButton = new JButton("Start");
 		startButton.addActionListener(this);
 		add(startButton);
-
-		// TODO add TextArea for word count results
 	}
 
 	/**
@@ -67,24 +64,9 @@ public class DisplayPanel extends JPanel
 		String basePageURL = urlTextField.getText();
 		int maxHopCount = Integer.parseInt(hopCountTextField.getText());
 		int maxNumberOfPages = Integer.parseInt(maxNumPagesTextField.getText());
-		
+
 		MainDriver main = new MainDriver();
 		main.run(basePageURL, maxHopCount, maxNumberOfPages);
-
-		// start refresh Timer
-		final int delayMillis = 1000;
-		ActionListener refresher = new ActionListener()
-		{
-
-			@Override
-			public void actionPerformed(ActionEvent evt)
-			{
-				// TODO refresh data on GUI
-				
-			}
-
-		};
-		new Timer(delayMillis, refresher).start();
 	}
 
 }
