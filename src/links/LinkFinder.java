@@ -50,8 +50,6 @@ public class LinkFinder
 				throw new RuntimeException(e);
 			}
 
-			// for each link in file, add link to outboundQueue
-
 			Elements aElements = doc.getElementsByTag("a");
 			Elements navElements = doc.getElementsByTag("nav");
 			Elements linkElements = doc.getElementsByTag("link");
@@ -61,6 +59,7 @@ public class LinkFinder
 			allElements.addAll(navElements); // <nav> links
 			allElements.addAll(linkElements); // <link> links
 
+			// for each link in file, add link to outboundQueue
 			for (int i = 0; i < allElements.size(); i++)
 			{
 				Element e = allElements.get(i);

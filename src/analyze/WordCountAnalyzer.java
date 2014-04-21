@@ -47,6 +47,7 @@ public class WordCountAnalyzer extends PageAnalyzer
 	@Override
 	protected void analyze(PageInfo pi)
 	{
+		// get file from downloads
 		File savedPage = new File(pi.getDLFileName());
 		Document doc = null;
 		try
@@ -58,9 +59,11 @@ public class WordCountAnalyzer extends PageAnalyzer
 			throw new RuntimeException("Failed to parse file: "
 					+ pi.getDLFileName(), e);
 		}
-		// splits on Punctuation and Whitespace characters (all Unicode)
+
+		// split on punctuation and whitespace characters (including all Unicode)
 		String[] words = doc.text().split("\\p{Punct}|\\p{Z}");
 
+		// update word counts
 		HashMap<String, Integer> wordCounts = new HashMap<String, Integer>();
 		for (int i = 0; i < words.length; ++i)
 		{

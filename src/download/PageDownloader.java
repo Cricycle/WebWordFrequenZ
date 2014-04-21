@@ -30,6 +30,7 @@ public class PageDownloader
 	@Override
 	public void run()
 	{
+		// open connection with URL
 		URLConnection conn;
 		try
 		{
@@ -42,6 +43,8 @@ public class PageDownloader
 			parentDriver.decrementThreadCount();
 			return;
 		}
+
+		// download webpage
 		try (InputStream in = conn.getInputStream();
 				FileOutputStream fos = new FileOutputStream(pi.getDLFileName(),
 						false))
@@ -56,7 +59,7 @@ public class PageDownloader
 		}
 		catch (IOException e)
 		{
-			// IO exception from BR, or bad file name
+			// IO exception from bad file name
 			parentDriver.decrementThreadCount();
 			throw new RuntimeException(e);
 		}
@@ -64,7 +67,7 @@ public class PageDownloader
 		// increment page count
 		parentDriver.incrementPageCount();
 
-		// add page to Outbound Queues
+		// add page to outbound queues
 		linkOutboundQueue.add(pi);
 		analysisOutboundQueue.add(pi);
 		synchronized (linkOutboundQueue)
@@ -76,6 +79,7 @@ public class PageDownloader
 			analysisOutboundQueue.notify();
 		}
 
+		// decrement thread count
 		parentDriver.decrementThreadCount();
 	}
 

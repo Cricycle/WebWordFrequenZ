@@ -50,8 +50,11 @@ public class PageDeleter
 	@Override
 	public void run()
 	{
+		// get file from downloads
 		String filename = pi.getDLFileName();
 		File downloaded_page = new File(filename);
+
+		// try to delete file
 		boolean success = false;
 		while (retryCount-- >= 0)
 		{
@@ -59,10 +62,13 @@ public class PageDeleter
 			if (success)
 				break;
 		}
+
 		if (!success)
 		{
 			System.err.println("Failed to delete file: " + filename);
 		}
+
+		// decrement thread count
 		parentDriver.decrementThreadCount();
 	}
 
