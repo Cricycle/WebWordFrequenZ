@@ -1,4 +1,4 @@
-package deleter;
+package delete;
 
 import java.io.File;
 

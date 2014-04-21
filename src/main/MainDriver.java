@@ -7,9 +7,9 @@ import java.util.concurrent.Semaphore;
 
 import links.LFDriver;
 import util.PageInfo;
-import web.PDDriver;
 import analyze.PADriver;
-import deleter.DDriver;
+import delete.DDriver;
+import download.PDDriver;
 
 public class MainDriver
 {
