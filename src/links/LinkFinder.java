@@ -11,20 +11,23 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import util.Driver;
 import util.PageInfo;
 
 public class LinkFinder implements Runnable
 {
 
 	private final PageInfo pageInfo;
+	private final Driver parentDriver;
 	private final PriorityBlockingQueue<PageInfo> download_outboundQueue;
 	private final PriorityBlockingQueue<PageInfo> delete_outboundQueue;
 
-	public LinkFinder(PageInfo pageInfo,
+	public LinkFinder(PageInfo pageInfo, Driver parentDriver, 
 			PriorityBlockingQueue<PageInfo> download_outboundQueue,
 			PriorityBlockingQueue<PageInfo> delete_outboundQueue)
 	{
 		this.pageInfo = pageInfo;
+		this.parentDriver = parentDriver;
 		this.delete_outboundQueue = delete_outboundQueue;
 		this.download_outboundQueue = download_outboundQueue;
 	}
@@ -90,11 +93,18 @@ public class LinkFinder implements Runnable
 				
 				if (okayToLink) {
 					download_outboundQueue.add(pi);
+					synchronized (download_outboundQueue) {
+						download_outboundQueue.notify();
+					}
 				}
 			}
 		}
 
 		delete_outboundQueue.add(pageInfo);
+		synchronized (delete_outboundQueue) {
+			delete_outboundQueue.notify();
+		}
+		parentDriver.decrementThreadCount();
 	}
 
 }

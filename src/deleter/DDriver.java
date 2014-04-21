@@ -3,6 +3,7 @@ package deleter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.Semaphore;
 
 import util.Driver;
 import util.PageInfo;
@@ -16,6 +17,11 @@ import util.PageInfo;
  */
 public class DDriver extends Driver 
 	implements Runnable {
+	
+	/**
+	 * Shared semaphore to allow taking from a queue
+	 */
+	private final Semaphore executionSemaphore;
 	
 	/**
 	 * InboundQueue of PageInfo instances which have been used
@@ -41,9 +47,11 @@ public class DDriver extends Driver
 	 * @param retryCnt The number of times the PageDeleter threads should retry
 	 * if they fail to delete the file.
 	 */
-	public DDriver(PriorityBlockingQueue<PageInfo> inboundQueue, int retryCnt) {
+	public DDriver(PriorityBlockingQueue<PageInfo> inboundQueue,
+			Semaphore executionSemaphore, int retryCnt) {
 		this.inboundQueue = inboundQueue;
 		this.occurrences = new HashSet<PageInfo>();
+		this.executionSemaphore = executionSemaphore;
 		retryCount = retryCnt;
 	}
 	
@@ -56,6 +64,10 @@ public class DDriver extends Driver
 		while (true) {
 			try {
 				// Get the next PageInfo object from the queue
+				synchronized (inboundQueue) {
+					while (inboundQueue.isEmpty()) { inboundQueue.wait(); }
+				}
+				executionSemaphore.acquire();
 				PageInfo pi = inboundQueue.take();
 				
 				if (!occurrences.contains(pi)) {
@@ -63,10 +75,13 @@ public class DDriver extends Driver
 					occurrences.add(pi);
 				} else {
 					// We have seen it before, now we delete it.
-					Thread t = new Thread(new PageDeleter(pi, retryCount));
+					incrementThreadCount();
+					Thread t = new Thread(new PageDeleter(pi, this, retryCount));
 					threads.add(t);
 					t.start();
 				}
+				executionSemaphore.release();
+				
 				// Wait a short time period to slow the creation of new threads
 				Thread.sleep(20);
 			} catch (InterruptedException e) {

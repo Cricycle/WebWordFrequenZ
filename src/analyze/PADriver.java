@@ -3,6 +3,7 @@ package analyze;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.Semaphore;
 
 import util.Driver;
 import util.PageInfo;
@@ -19,6 +20,11 @@ public class PADriver extends Driver
 {
 	
 	/**
+	 * Shared semaphore to allow taking from a queue
+	 */
+	private final Semaphore executionSemaphore;
+	
+	/**
 	 * A queue which expects PageInfo about already downloaded webpages
 	 */
 	private final PriorityBlockingQueue<PageInfo> inboundQueue;
@@ -32,10 +38,11 @@ public class PADriver extends Driver
 	 * @param inboundQueue Queue with elements indicating files to be analyzed
 	 * @param outboundQueue Queue with elements indicating files already analyzed 
 	 */
-	public PADriver(PriorityBlockingQueue<PageInfo> inboundQueue,
+	public PADriver(PriorityBlockingQueue<PageInfo> inboundQueue, Semaphore executionSemaphore,
 			PriorityBlockingQueue<PageInfo> outboundQueue) {
 		this.inboundQueue = inboundQueue;
 		this.outboundQueue = outboundQueue;
+		this.executionSemaphore = executionSemaphore;
 	}
 	
 	/**
@@ -47,7 +54,14 @@ public class PADriver extends Driver
 		ArrayList<Thread> threads = new ArrayList<Thread>();
 		while (true) {
 			try {
+				synchronized(inboundQueue) {
+					while (inboundQueue.isEmpty()) {inboundQueue.wait();}
+				}
+				executionSemaphore.acquire();
 				PageInfo pi = inboundQueue.take();
+				this.incrementThreadCount();
+				executionSemaphore.release();
+				
 				Thread t = new Thread(new WordCountAnalyzer(pi, this, sharedWordCount, outboundQueue));
 				threads.add(t);
 				t.start();
@@ -58,6 +72,9 @@ public class PADriver extends Driver
 		
 		while (!inboundQueue.isEmpty()) {
 			outboundQueue.add(inboundQueue.poll());
+		}
+		synchronized (outboundQueue) {
+			outboundQueue.notify();
 		}
 		
 		for (Thread t : threads) {

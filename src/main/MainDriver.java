@@ -40,14 +40,14 @@ public class MainDriver
 
 		Semaphore executionSemaphore = new Semaphore(4, true);
 
-		PDDriver pdDriver = new PDDriver(maxNumberOfPages,
+		PDDriver pdDriver = new PDDriver(maxNumberOfPages, executionSemaphore,
 				finderToDownloaderQueue, downloaderToFinderQueue,
 				downloaderToAnalyzerQueue);
 		LFDriver lfDriver = new LFDriver(downloaderToFinderQueue,
-				finderToDownloaderQueue, toDeleterQueue);
+				executionSemaphore, finderToDownloaderQueue, toDeleterQueue);
 		PADriver analysisDriver = new PADriver(downloaderToAnalyzerQueue,
-				toDeleterQueue);
-		DDriver deletionDriver = new DDriver(toDeleterQueue, 3); // retry failed deletion 3 times
+				executionSemaphore, toDeleterQueue);
+		DDriver deletionDriver = new DDriver(toDeleterQueue, executionSemaphore, 3); // retry failed deletion 3 times
 
 		Thread downloaderThread = new Thread(pdDriver, "DownloaderThread");
 		Thread finderThread = new Thread(lfDriver, "FinderThread");
@@ -78,7 +78,11 @@ public class MainDriver
 						&& downloaderToAnalyzerQueue.isEmpty()
 						&& toDeleterQueue.isEmpty())
 				{
+					executionSemaphore.release(4);
+					System.err.println("Determined that nothing is running.");
 					break;
+				} else {
+					executionSemaphore.release(4);
 				}
 			}
 			catch (InterruptedException e)
@@ -93,13 +97,13 @@ public class MainDriver
 		{
 			downloaderThread.interrupt();
 			downloaderThread.join();
-			
+
 			finderThread.interrupt();
 			finderThread.join();
-			
+
 			analyzerThread.interrupt();
 			analyzerThread.join();
-			
+
 			deleterThread.interrupt();
 			deleterThread.join();
 		}

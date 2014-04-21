@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.Semaphore;
 
 import main.Displayer;
 import util.PageInfo;
@@ -37,7 +38,8 @@ public class WCATest {
 		System.out.println("reached here");
 		PriorityBlockingQueue<PageInfo> fakeinqueue = new PriorityBlockingQueue<>();
 		PriorityBlockingQueue<PageInfo> fakeoutqueue = new PriorityBlockingQueue<>();
-		PADriver pad = new PADriver(fakeinqueue, fakeoutqueue);
+		Semaphore fake = new Semaphore(1);
+		PADriver pad = new PADriver(fakeinqueue, fake, fakeoutqueue);
 		// tested with 5000, new thread every 20ms, worked fine
 		int testSize = 500;
 		Thread padthread = null;

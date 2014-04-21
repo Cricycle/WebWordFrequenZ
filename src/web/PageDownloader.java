@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.net.URLConnection;
 import java.util.concurrent.PriorityBlockingQueue;
 
+import util.Driver;
 import util.PageInfo;
 
 public class PageDownloader
@@ -13,14 +14,16 @@ public class PageDownloader
 {
 
 	private final PageInfo pi;
+	private final Driver parentDriver;
 	private final PriorityBlockingQueue<PageInfo> linkOutboundQueue;
 	private final PriorityBlockingQueue<PageInfo> analysisOutboundQueue;
 
-	public PageDownloader(PageInfo pi,
+	public PageDownloader(PageInfo pi, Driver parentDriver,
 			PriorityBlockingQueue<PageInfo> linkOutboundQueue,
 			PriorityBlockingQueue<PageInfo> analysisOutboundQueue)
 	{
 		this.pi = pi;
+		this.parentDriver = parentDriver;
 		this.linkOutboundQueue = linkOutboundQueue;
 		this.analysisOutboundQueue = analysisOutboundQueue;
 	}
@@ -37,6 +40,7 @@ public class PageDownloader
 		{
 			System.err.println("Could not open connection with URL: " + pi.url);
 			e.printStackTrace();
+			parentDriver.decrementThreadCount();
 			return;
 		}
 		try (InputStream in = conn.getInputStream();
@@ -53,7 +57,7 @@ public class PageDownloader
 		catch (IOException e)
 		{
 			// IO exception from BR, or bad file name
-			// e.printStackTrace();
+			parentDriver.decrementThreadCount();
 			throw new RuntimeException(e);
 		}
 
@@ -63,6 +67,14 @@ public class PageDownloader
 		// add page to Outbound Queues
 		linkOutboundQueue.add(pi);
 		analysisOutboundQueue.add(pi);
+		synchronized (linkOutboundQueue) {
+			linkOutboundQueue.notify();
+		}
+		synchronized (analysisOutboundQueue) {
+			analysisOutboundQueue.notify();
+		}
+		
+		parentDriver.decrementThreadCount();
 	}
 
 }

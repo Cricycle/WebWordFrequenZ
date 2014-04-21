@@ -97,7 +97,7 @@ public class WordCountAnalyzer extends PageAnalyzer {
 		Collections.sort(pairs);
 		
 		String analysisFile = Displayer.ANALYSIS_FOLDER + "/" + filename;
-		System.err.println(analysisFile);
+		
 		try (PrintWriter out = new PrintWriter(analysisFile))
 		{
 			for (int i = 0; i < pairs.size(); ++i) {

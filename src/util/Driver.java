@@ -3,8 +3,8 @@ package util;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class Driver {
-	private AtomicInteger unfinishedThreadCount;
-	
+	private AtomicInteger unfinishedThreadCount = new AtomicInteger(0);
+
 	public void incrementThreadCount() {
 		unfinishedThreadCount.incrementAndGet();
 	}

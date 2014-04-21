@@ -46,6 +46,9 @@ public abstract class PageAnalyzer implements Runnable {
 	public final void run() {
 		analyze(pi);
 		outboundQueue.add(pi);
+		synchronized(outboundQueue) {
+			outboundQueue.notify();
+		}
 		parentDriver.decrementThreadCount();
 	}
 	

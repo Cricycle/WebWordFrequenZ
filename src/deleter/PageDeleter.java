@@ -2,6 +2,7 @@ package deleter;
 
 import java.io.File;
 
+import util.Driver;
 import util.PageInfo;
 
 /**
@@ -14,7 +15,7 @@ public class PageDeleter implements Runnable {
 	/**
 	 * The PageInfo instance to be deleted
 	 */
-	private PageInfo pi;
+	private final PageInfo pi;
 	
 	/**
 	 * Number of times to retry deletion upon failure
@@ -22,13 +23,20 @@ public class PageDeleter implements Runnable {
 	private int retryCount;
 	
 	/**
+	 * Reference to the parent driver which created this thread
+	 */
+	private final Driver parentDriver;
+	
+	/**
 	 * Basic constructor
 	 * @param pi The PageInfo instance to be deleted
+	 * @param parentDriver Reference to the driver which created this thread
 	 * @param retryCount The number of times to retry failed deletion
 	 */
-	public PageDeleter(PageInfo pi, int retryCount) {
+	public PageDeleter(PageInfo pi, Driver parentDriver,  int retryCount) {
 		this.pi = pi;
 		this.retryCount = retryCount;
+		this.parentDriver = parentDriver;
 	}
 	
 	@Override
@@ -43,6 +51,7 @@ public class PageDeleter implements Runnable {
 		if (!success) {
 			System.err.println("Failed to delete file: " + filename);
 		}
+		parentDriver.decrementThreadCount();
 	}
 
 }
