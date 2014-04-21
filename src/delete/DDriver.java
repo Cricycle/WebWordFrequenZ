@@ -99,7 +99,7 @@ public class DDriver extends Driver
 				break;
 			}
 		}
-		System.err.printf("DeletionDriver has exited.%n");
+		System.out.printf("DeletionDriver has exited.%n");
 	}
 
 }

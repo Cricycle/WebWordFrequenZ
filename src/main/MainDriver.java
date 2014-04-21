@@ -1,5 +1,6 @@
 package main;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.PriorityBlockingQueue;
@@ -14,8 +15,38 @@ import download.PDDriver;
 public class MainDriver
 {
 
+	public static final String DOWNLOAD_FOLDER = "downloaded_pages";
+	public static final String ANALYSIS_FOLDER = "analyzed_data";
+
+	public static void main(String[] args)
+	{
+		if (args.length != 3)
+		{
+			System.err.println("Usage: basePageURL maxHopCount maxNumberOfPages");
+			System.exit(1);
+		}
+
+		String basePageURL = args[0];
+		int maxHopCount = Integer.parseInt(args[1]);
+		int maxNumberOfPages = Integer.parseInt(args[2]);
+
+		MainDriver main = new MainDriver();
+		main.run(basePageURL, maxHopCount, maxNumberOfPages);
+	}
+
 	public void run(String basePageURL, int maxHopCount, int maxNumberOfPages)
 	{
+		System.out.printf("Executing with parameters: %s %d %d%n", basePageURL,
+				maxHopCount, maxNumberOfPages);
+
+		// make folder to store downloaded webpages
+		File downloadFolder = new File(MainDriver.DOWNLOAD_FOLDER);
+		downloadFolder.mkdirs();
+
+		// make folder to store analysis results
+		File analysisFolder = new File(MainDriver.ANALYSIS_FOLDER);
+		analysisFolder.mkdirs();
+
 		// create buffers between tasks
 
 		URL startURL;
@@ -79,7 +110,7 @@ public class MainDriver
 						&& toDeleterQueue.isEmpty())
 				{
 					executionSemaphore.release(4);
-					System.err.println("Determined that nothing is running.");
+					System.out.println("Determined that nothing is running.");
 					break;
 				} else {
 					executionSemaphore.release(4);
@@ -91,7 +122,7 @@ public class MainDriver
 			}
 		}
 
-		System.err.println("Page count: " + PDDriver.getPageCount());
+		System.out.println("Page count: " + pdDriver.getPageCount());
 
 		try
 		{
@@ -112,6 +143,8 @@ public class MainDriver
 			// very bad things happened
 			e.printStackTrace();
 		}
+
+		System.out.println("Execution completed.");
 	}
 
 }

@@ -3,12 +3,11 @@ package util;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import main.Displayer;
+import main.MainDriver;
 
 public class PageInfo
 	implements Comparable<PageInfo>
 {
-	public static final PageInfo END = new PageInfo(null, Integer.MAX_VALUE);
 
 	public static final String FORWARD_SLASH_REPLACEMENT = "%2F";
 	public static final String COLON_REPLACEMENT = "%3A";
@@ -61,7 +60,7 @@ public class PageInfo
 	 * @return The downloaded file location
 	 */
 	public String getDLFileName() {
-		return Displayer.DOWNLOAD_FOLDER + "/" + fileName;
+		return MainDriver.DOWNLOAD_FOLDER + "/" + fileName;
 	}
 
 	private String makeFileName(URL url)

@@ -87,7 +87,7 @@ public class PADriver extends Driver
 		}
 		
 		WordCountAnalyzer.saveDataToFile("word_counts.txt", sharedWordCount);
-		System.err.printf("PageAnalysisDriver has exited.%n");
+		System.out.printf("PageAnalysisDriver has exited.%n");
 	}
 	
 }

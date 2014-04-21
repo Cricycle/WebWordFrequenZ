@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.net.URLConnection;
 import java.util.concurrent.PriorityBlockingQueue;
 
-import util.Driver;
 import util.PageInfo;
 
 public class PageDownloader
@@ -14,11 +13,11 @@ public class PageDownloader
 {
 
 	private final PageInfo pi;
-	private final Driver parentDriver;
+	private final PDDriver parentDriver;
 	private final PriorityBlockingQueue<PageInfo> linkOutboundQueue;
 	private final PriorityBlockingQueue<PageInfo> analysisOutboundQueue;
 
-	public PageDownloader(PageInfo pi, Driver parentDriver,
+	public PageDownloader(PageInfo pi, PDDriver parentDriver,
 			PriorityBlockingQueue<PageInfo> linkOutboundQueue,
 			PriorityBlockingQueue<PageInfo> analysisOutboundQueue)
 	{
@@ -62,7 +61,7 @@ public class PageDownloader
 		}
 
 		// increment page count
-		PDDriver.incrementPageCount();
+		parentDriver.incrementPageCount();
 
 		// add page to Outbound Queues
 		linkOutboundQueue.add(pi);

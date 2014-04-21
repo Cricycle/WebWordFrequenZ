@@ -71,7 +71,7 @@ public class LFDriver extends Driver
 				break;
 			}
 		}
-		System.err.printf("LinkFinderDriver has exited.%n");
+		System.out.printf("LinkFinderDriver has exited.%n");
 	}
 
 }

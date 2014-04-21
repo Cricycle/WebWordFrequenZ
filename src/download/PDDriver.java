@@ -9,7 +9,7 @@ import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import main.Displayer;
+import main.MainDriver;
 import util.Driver;
 import util.PageInfo;
 
@@ -17,7 +17,7 @@ public class PDDriver extends Driver
 	implements Runnable
 {
 
-	private static AtomicInteger webpageCount = new AtomicInteger();
+	private AtomicInteger webpageCount = new AtomicInteger(0);
 	
 	/**
 	 * Shared semaphore to allow taking from a queue
@@ -43,22 +43,20 @@ public class PDDriver extends Driver
 
 		try
 		{
-			pageListWriter = new PrintWriter(new File(Displayer.ANALYSIS_FOLDER
+			pageListWriter = new PrintWriter(new File(MainDriver.ANALYSIS_FOLDER
 					+ "/page_list.txt"));
 		}
 		catch (FileNotFoundException e)
 		{
 			throw new RuntimeException(e);
 		}
-
-		resetPageCount();
 	}
 
 	@Override
 	public void run()
 	{
 		ArrayList<Thread> threads = new ArrayList<Thread>();
-		while (PDDriver.getPageCount() < MAX_NUM_PAGES)
+		while (getPageCount() < MAX_NUM_PAGES)
 		{
 			try
 			{
@@ -104,7 +102,7 @@ public class PDDriver extends Driver
 			}
 		}
 		
-		while (PDDriver.getPageCount() >= MAX_NUM_PAGES) {
+		while (getPageCount() >= MAX_NUM_PAGES) {
 			try {
 				inboundQueue.take();
 			} catch (InterruptedException e) {
@@ -112,22 +110,17 @@ public class PDDriver extends Driver
 			}
 		}
 		
-		System.err.printf("PageDownloadDriver has exited.%n");
+		System.out.printf("PageDownloadDriver has exited.%n");
 	}
 
-	public static int getPageCount()
+	public int getPageCount()
 	{
 		return webpageCount.get();
 	}
 
-	public static int incrementPageCount()
+	public int incrementPageCount()
 	{
 		return webpageCount.incrementAndGet();
-	}
-
-	private static void resetPageCount()
-	{
-		webpageCount.set(0);
 	}
 
 }
