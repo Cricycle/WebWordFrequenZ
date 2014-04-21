@@ -145,6 +145,8 @@ public class MainDriver
 		}
 
 		System.out.println("Execution completed.");
+		System.out.println("Results in directory "
+				+ analysisFolder.getAbsolutePath());
 	}
 
 }
